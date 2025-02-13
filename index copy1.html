@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Div que se aleja del puntero</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      #myDiv {
+        width: 300px;
+        height: 100px;
+        background-color: red;
+        position: absolute;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="myDiv"></div>
+
+    <script>
+      const div = document.getElementById("myDiv");
+      const moveSpeed = 0.2; // Aumento de la velocidad para hacerlo más rápido
+      const detectionDistance = 300; // Detectar el ratón desde más lejos
+
+      // Función para centrar el div horizontalmente y colocarlo en un 30% de la altura desde la parte superior
+      function centerDiv() {
+        const centerX = window.innerWidth / 2 - div.offsetWidth / 2;
+        const centerY = window.innerHeight * 0.3 - div.offsetHeight / 2; // 30% de la altura de la ventana
+        div.style.left = `${centerX}px`;
+        div.style.top = `${centerY}px`;
+      }
+
+      // Inicializamos las posiciones
+      let targetX =
+        parseFloat(div.style.left) ||
+        window.innerWidth / 2 - div.offsetWidth / 2;
+      let targetY =
+        parseFloat(div.style.top) ||
+        window.innerHeight * 0.3 - div.offsetHeight / 2;
+
+      // Función para calcular la distancia entre el puntero y el div
+      function moveDivAway(event) {
+        const divRect = div.getBoundingClientRect();
+        const divX = divRect.left + divRect.width / 2;
+        const divY = divRect.top + divRect.height / 2;
+
+        const mouseX = event.clientX;
+        const mouseY = event.clientY;
+
+        // Calcular la dirección del movimiento
+        const deltaX = mouseX - divX;
+        const deltaY = mouseY - divY;
+
+        // Calcular la distancia entre el mouse y el div
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        // Si la distancia es pequeña, mover el div
+        if (distance < detectionDistance) {
+          // Detectar desde más lejos
+          // Ajustar la velocidad de movimiento según la distancia
+          const moveX =
+            (deltaX / distance) * moveSpeed * (detectionDistance - distance);
+          const moveY =
+            (deltaY / distance) * moveSpeed * (detectionDistance - distance);
+
+          // Actualizamos las posiciones objetivo para hacer el movimiento más fluido
+          targetX = div.offsetLeft - moveX;
+          targetY = div.offsetTop - moveY;
+        }
+
+        // Desplazamos el div gradualmente hacia las nuevas coordenadas
+        div.style.left = `${
+          div.offsetLeft + (targetX - div.offsetLeft) * 0.2
+        }px`; // Aumentamos el factor de interpolación
+        div.style.top = `${div.offsetTop + (targetY - div.offsetTop) * 0.2}px`; // Aumentamos el factor de interpolación
+
+        // Comprobar si el div se ha movido fuera de la pantalla y transportarlo un poco hacia el centro
+        if (div.offsetLeft + div.offsetWidth < 0) {
+          div.style.left = `${Math.min(
+            0,
+            window.innerWidth / 2 - div.offsetWidth / 2
+          )}px`; // Transportarlo hacia el centro
+        } else if (div.offsetLeft > window.innerWidth) {
+          div.style.left = `${Math.max(
+            window.innerWidth - div.offsetWidth,
+            window.innerWidth / 2 - div.offsetWidth / 2
+          )}px`; // Transportarlo hacia el centro
+        }
+
+        if (div.offsetTop + div.offsetHeight < 0) {
+          div.style.top = `${Math.min(
+            0,
+            window.innerHeight * 0.3 - div.offsetHeight / 2
+          )}px`; // Transportarlo hacia el 30% de la altura
+        } else if (div.offsetTop > window.innerHeight) {
+          div.style.top = `${Math.max(
+            window.innerHeight - div.offsetHeight,
+            window.innerHeight * 0.3 - div.offsetHeight / 2
+          )}px`; // Transportarlo hacia el 30% de la altura
+        }
+      }
+
+      // Escuchar el movimiento del mouse
+      document.addEventListener("mousemove", moveDivAway);
+
+      // Centrar el div horizontalmente y colocarlo en un 30% de la altura desde la parte superior al redimensionar la ventana
+      window.addEventListener("resize", centerDiv);
+
+      // Inicializar el div en la posición deseada
+      centerDiv();
+    </script>
+  </body>
+</html>

@@ -1,18 +1,26 @@
+import { origin, position } from "./states";
+
 const div = document.getElementById("running-modal");
 const moveSpeed = 0.2;
 const detectionDistance = 300;
-
-function centerDiv() {
-  const centerX = window.innerWidth / 2 - div.offsetWidth / 2;
-  const centerY = window.innerHeight * 0.3 - div.offsetHeight / 2;
-  div.style.left = `${centerX}px`;
-  div.style.top = `${centerY}px`;
-}
 
 let targetX =
   parseFloat(div.style.left) || window.innerWidth / 2 - div.offsetWidth / 2;
 let targetY =
   parseFloat(div.style.top) || window.innerHeight * 0.3 - div.offsetHeight / 2;
+
+export function centerDiv() {
+  const centerX = window.innerWidth / 2 - div.offsetWidth / 2;
+  const centerY = window.innerHeight * 0.3 - div.offsetHeight / 2;
+  div.style.left = `${centerX}px`;
+  div.style.top = `${centerY}px`;
+
+  // Inicializar position
+  position.prevX = div.style.left;
+  position.prevY = div.style.top;
+  origin.x = centerX;
+  origin.y = centerY;
+}
 
 function moveDivAway(event) {
   const divRect = div.getBoundingClientRect();
@@ -65,7 +73,16 @@ function moveDivAway(event) {
   }
 }
 
-document.addEventListener("mousemove", moveDivAway);
-window.addEventListener("resize", centerDiv);
+window.addEventListener("resize", (e) => {
+  if (origin.runnerState) {
+    centerDiv(e);
+  }
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (origin.runnerState) {
+    moveDivAway(e);
+  }
+});
 
 centerDiv();

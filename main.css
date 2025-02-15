@@ -3,8 +3,8 @@ body {
   overflow: hidden;
   background-color: black;
   color: #ffd2a0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
-    Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+    sans-serif;
 }
 
 #running-modal {
@@ -33,6 +33,48 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 5;
+}
+
+#letter {
+  width: 500px;
+  height: 800px;
+  background-image: url(./letter.jpg);
+  background-size: cover;
+  border-radius: 2rem;
+  box-shadow: 0px 0px 60px;
+
+  position: absolute;
+  top: -1500px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  user-select: none;
+}
+
+#letter[done] {
+  transition: top 1500ms;
+}
+
+#letter #inner {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: large;
+  padding: 2rem;
+  color: #8174a0;
+  opacity: 0;
+
+  transition: opacity 1000ms;
+}
+
+#letter #inner img {
+  height: 280px;
+  border: 1px solid rgba(129, 116, 160, 0.4);
+  border-radius: 3rem;
+}
+
+#player {
+  position: absolute;
+  right: -9999px;
 }
 
 /*
